@@ -1,0 +1,18 @@
+# Secrets: never commit these (the fork is PUBLIC)
+.env
+*.env
+!.env.example
+secret_recovery_phrase
+dbpass
+atlas-credentials.env
+
+# Python
+venv/
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# OS / tooling
+.DS_Store
+.vercel

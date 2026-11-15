@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}KnownHosts{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
+</head>
+<body>
+  <header class="topbar">
+    <a class="logo" href="/"><span class="logo-mark">⛨</span> KnownHosts</a>
+    <nav>
+      <a href="/" class="{{ 'active' if request.path == '/' }}">Wallet</a>
+      <a href="/contacts" class="{{ 'active' if request.path == '/contacts' }}">Contacts</a>
+      <a href="/rotate" class="{{ 'active' if request.path == '/rotate' }}">Alice's wallet</a>
+    </nav>
+    <span class="badge net"><span class="dot"></span> Monad Testnet</span>
+  </header>
+
+  <main class="wrap">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="foot">
+    Non-custodial: KnownHosts never holds keys or funds.
+    Wallet history is simulated for the demo; address-change verification is live on Monad Testnet.
+  </footer>
+  <div id="toast" class="toast" role="status"></div>
+  <script src="{{ url_for('static', filename='common.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

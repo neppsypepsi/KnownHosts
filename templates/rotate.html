@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}KnownHosts · Alice's wallet{% endblock %}
+{% block content %}
+<div class="grid">
+  <section class="card">
+    <div class="eyebrow">Playing the role of Alice</div>
+    <h2>Approve a new address</h2>
+    <p class="muted">Alice got a new wallet. She signs one transaction <strong>from her old wallet</strong>
+      saying "my new address is X". The registry stores it under <span class="mono">msg.sender</span>,
+      so only Alice's old key can write it. Not us, not an attacker.</p>
+
+    <div id="not-deployed" class="verdict warn" hidden>
+      <div class="v-title">Registry contract not deployed yet</div>
+      <p>Set <span class="mono">REGISTRY_ADDRESS</span> and add <span class="mono">contracts/abi.json</span>.</p>
+    </div>
+
+    <button class="btn primary big" id="connect">🦊 Connect MetaMask</button>
+
+    <div id="connected" hidden>
+      <div class="kv"><span>Connected</span><span class="mono" id="me"></span></div>
+      <div id="wrong-account" class="note-warn" hidden>
+        This isn't Alice (old). Switch accounts in MetaMask to run the demo as Alice.
+      </div>
+      <div class="kv"><span>Registry says</span><span class="mono" id="state">…</span></div>
+
+      <label for="new-addr">New address</label>
+      <input id="new-addr" class="mono" spellcheck="false">
+      <div class="row-btns">
+        <button class="btn primary" id="rotate">Approve new address</button>
+        <button class="btn" id="revoke">Revoke approval</button>
+      </div>
+    </div>
+
+    <div id="tx" aria-live="polite"></div>
+  </section>
+
+  <section class="card">
+    <h2>How it works</h2>
+    <ol class="steps">
+      <li>Alice calls <span class="mono">rotate(newAddress)</span> from her <strong>old</strong> wallet.</li>
+      <li>The contract records <span class="mono">rotatedTo[msg.sender] = newAddress</span>.</li>
+      <li>When you paste Alice's new address, KnownHosts reads the registry: approved by the old key → ✅.</li>
+      <li>An attacker can't write to Alice's entry without Alice's private key → 🔴.</li>
+    </ol>
+    <p class="muted small" id="registry-link"></p>
+  </section>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
+<script src="{{ url_for('static', filename='rotate.js') }}"></script>
+{% endblock %}

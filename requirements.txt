@@ -1,0 +1,4 @@
+flask
+pymongo
+web3
+python-dotenv

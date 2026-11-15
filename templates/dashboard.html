@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}KnownHosts · Wallet{% endblock %}
+{% block content %}
+<div class="grid">
+  <!-- Left: wallet -->
+  <section>
+    <div class="card balance-card">
+      <div class="account">
+        <span class="avatar">Y</span>
+        <div>
+          <div class="muted small">Account</div>
+          <div><strong>You</strong> <span class="mono muted">{{ you | short }}</span></div>
+        </div>
+      </div>
+      <div class="balance">
+        {% if balance is not none %}{{ '%.4f' | format(balance) }}{% else %}—{% endif %}
+        <span class="unit">MON</span>
+      </div>
+      <div class="actions">
+        <button class="btn primary" id="btn-send">↑ Send</button>
+        <button class="btn" id="btn-receive">↓ Receive</button>
+      </div>
+      <div id="receive-box" class="receive" hidden>
+        <div class="muted small">Your address</div>
+        <div class="mono addr-full">{{ you }}</div>
+        <button class="btn small" data-copy="{{ you }}">Copy</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Recent Activity</h2>
+      <ul class="activity">
+        {% for r in rows %}
+        <li class="act-row">
+          <span class="act-icon {{ r.direction }}">{{ '↑' if r.direction == 'sent' else '↓' }}</span>
+          <div class="act-main">
+            <div class="act-title">{{ 'Sent' if r.direction == 'sent' else 'Received' }}</div>
+            <div class="mono muted">{{ 'To' if r.direction == 'sent' else 'From' }} {{ r.counterparty | short }}</div>
+          </div>
+          <div class="act-right">
+            <div class="act-amt {{ r.direction }}">{{ '−' if r.direction == 'sent' else '+' }}{{ '%g' | format(r.amount) }} MON</div>
+            <div class="muted small">{{ r.timestamp | ago }}</div>
+          </div>
+          <button class="btn small" data-copy="{{ r.counterparty }}" title="Copy full address">Copy</button>
+        </li>
+        {% else %}
+        <li class="muted">No activity yet. Run <code>python seed.py</code>.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </section>
+
+  <!-- Right: send / check -->
+  <section>
+    <div class="card" id="send-card">
+      <h2>Send</h2>
+      <form id="check-form" autocomplete="off">
+        <label for="address">Recipient address</label>
+        <input id="address" class="mono" placeholder="0x…" spellcheck="false" required>
+
+        <label for="contact">Paying</label>
+        <select id="contact">
+          <option value="">Auto-detect</option>
+          {% for c in contacts %}
+          <option value="{{ c._id }}">{{ c.name }}</option>
+          {% endfor %}
+        </select>
+
+        <button class="btn primary big" type="submit" id="check-btn">⛨ Check with KnownHosts</button>
+      </form>
+    </div>
+
+    <div id="result" aria-live="polite"></div>
+  </section>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='dashboard.js') }}"></script>
+{% endblock %}

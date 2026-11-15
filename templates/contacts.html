@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}KnownHosts · Contacts{% endblock %}
+{% block content %}
+<div class="grid">
+  <section class="card">
+    <h2>Known hosts <span class="muted small">({{ contacts | length }} trusted)</span></h2>
+    <ul class="contacts">
+      {% for c in contacts %}
+      <li class="contact">
+        <div class="contact-head">
+          <span class="avatar">{{ c.name[:1] | upper }}</span>
+          <div>
+            <div><strong>{{ c.name }}</strong></div>
+            <div class="muted small">First trusted {{ c.first_trusted_at | nice_date }}</div>
+          </div>
+          <button class="btn small" data-copy="{{ c.address }}">Copy</button>
+        </div>
+        <div class="mono addr-full">{{ c.address }}</div>
+        {% for p in c.previous_addresses %}
+        <div class="prev">
+          <span class="muted small">Previous ({{ p.reason }}, {{ p.replaced_at | nice_date }})</span>
+          <div class="mono muted strike">{{ p.address }}</div>
+        </div>
+        {% endfor %}
+      </li>
+      {% else %}
+      <li class="muted">No contacts yet.</li>
+      {% endfor %}
+    </ul>
+  </section>
+
+  <section>
+    <div class="card">
+      <h2>Add a contact</h2>
+      <p class="muted">Trust on first use: only add an address you verified with the person directly.</p>
+      <form id="add-form" autocomplete="off">
+        <label for="name">Name</label>
+        <input id="name" maxlength="60" required>
+        <label for="addr">Address</label>
+        <input id="addr" class="mono" placeholder="0x…" spellcheck="false" required>
+        <label for="note">Note <span class="muted">(optional)</span></label>
+        <input id="note" maxlength="200">
+        <button class="btn primary big" type="submit">Add to known hosts</button>
+      </form>
+    </div>
+  </section>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+  // Add-contact form: POST /api/contacts, then reload to show the new row.
+  document.getElementById("add-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const { ok, data } = await postJSON("/api/contacts", {
+      name: document.getElementById("name").value.trim(),
+      address: document.getElementById("addr").value.trim(),
+      note: document.getElementById("note").value.trim(),
+    });
+    if (ok) location.reload();
+    else toast(data.error || "Could not add contact");
+  });
+</script>
+{% endblock %}
