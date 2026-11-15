@@ -150,3 +150,60 @@ input.mono { font-size: 15px; }
   opacity: 0; transition: .2s; pointer-events: none;
 }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ---------- simulated iMessage notifications (demo) ---------- */
+.msg-stack {
+  position: fixed; top: 84px; right: 20px; z-index: 20;
+  display: flex; flex-direction: column; gap: 10px; width: min(380px, calc(100vw - 32px));
+}
+.msg-banner {
+  all: unset; box-sizing: border-box; cursor: pointer; width: 100%;
+  background: rgba(58, 58, 64, .92); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  color: #fff; border-radius: 18px; padding: 12px 14px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .5);
+  animation: msg-in .35s cubic-bezier(.2, .9, .3, 1.2);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", Inter, sans-serif;
+}
+.msg-banner:hover { background: rgba(70, 70, 78, .95); }
+.msg-banner:focus-visible { outline: 2px solid var(--teal); }
+@keyframes msg-in { from { transform: translateY(-30px); opacity: 0; } to { transform: none; opacity: 1; } }
+.msg-app { display: flex; align-items: center; gap: 6px; font-size: 12px; letter-spacing: .5px; color: #c7c7cc; margin-bottom: 6px; }
+.msg-icon {
+  width: 20px; height: 20px; border-radius: 5px; background: #34c759;
+  display: grid; place-items: center; font-size: 12px;
+}
+.msg-time { margin-left: auto; letter-spacing: 0; }
+.msg-body { display: flex; gap: 10px; align-items: flex-start; }
+.msg-avatar {
+  width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0;
+  display: grid; place-items: center; font-weight: 700; font-size: 18px;
+}
+.msg-avatar.known { background: linear-gradient(180deg, #a5a5ad, #6e6e76); color: #fff; }
+.msg-avatar.unknown { background: #8e8e93; font-size: 18px; }
+.msg-text { min-width: 0; }
+.msg-from { font-weight: 700; font-size: 15px; }
+.msg-from.big { font-size: 22px; margin-top: 8px; }
+.msg-preview {
+  font-size: 14px; color: #e5e5ea; line-height: 1.35;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  word-break: break-word;
+}
+
+.msg-overlay {
+  position: fixed; inset: 0; z-index: 30; background: rgba(0, 0, 0, .6);
+  display: grid; place-items: center; padding: 16px;
+}
+.msg-overlay[hidden] { display: none; }
+.msg-sheet {
+  background: #1c1c1e; border-radius: 24px; padding: 28px; width: min(620px, 100%);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, .6); animation: msg-in .3s ease-out;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", Inter, sans-serif;
+}
+.msg-sheet-head { display: flex; flex-direction: column; align-items: center; text-align: center; margin-bottom: 20px; }
+.msg-sheet-head .msg-avatar { width: 64px; height: 64px; font-size: 30px; }
+.bubble {
+  background: #3a3a3c; color: #fff; border-radius: 22px 22px 22px 6px;
+  padding: 16px 20px; font-size: 22px; line-height: 1.4; max-width: 92%;
+}
+.bubble-addr { margin-top: 10px; font-size: 17px; word-break: break-all; color: #64d2ff; }
+.row-btns.center { justify-content: center; margin-top: 22px; }

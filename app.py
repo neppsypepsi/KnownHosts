@@ -97,6 +97,8 @@ def dashboard():
         balance=chain.get_balance(YOU_ADDRESS) if YOU_ADDRESS else None,
         rows=rows,
         contacts=list(contacts.find().sort("name", 1)),
+        # Addresses for the simulated text messages (Ctrl+J / Ctrl+K on the dashboard)
+        demo_msgs={"attacker": os.environ.get("ATTACKER", ""), "alice_new": ALICE_NEW},
     )
 
 

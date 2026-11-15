@@ -73,7 +73,13 @@
     <div id="result" aria-live="polite"></div>
   </section>
 </div>
+
+<!-- Simulated incoming text messages for the demo (see static/messages.js) -->
+<div id="msg-stack" class="msg-stack" aria-live="polite"></div>
+<div id="msg-overlay" class="msg-overlay" hidden></div>
 {% endblock %}
 {% block scripts %}
+<script>window.DEMO_MSGS = {{ demo_msgs | tojson }};</script>
 <script src="{{ url_for('static', filename='dashboard.js') }}"></script>
+<script src="{{ url_for('static', filename='messages.js') }}"></script>
 {% endblock %}
