@@ -4,7 +4,7 @@
 
 🔗 **Live app:** https://knownhosts.vercel.app
 📜 **Registry contract (Monad Testnet):** [`0xaE8F6e031C1181a7242D7719A91Fbd1D9aA90e32`](https://testnet.monadexplorer.com/address/0xaE8F6e031C1181a7242D7719A91Fbd1D9aA90e32) (source verified on Sourcify)
-🎥 **Demo video:** _link added after recording_
+🎥 **Demo video:** https://youtu.be/W-gQAnzff4c
 
 Built solo at **Monad Blitz Oregon** (Nov 15, 2026).
 
@@ -33,42 +33,6 @@ KnownHosts does the same for payments:
 - **Trust on first use:** contacts you've verified are saved as known hosts.
 - **Lookalike detection:** an address that imitates a contact is blocked, with the differing characters highlighted.
 - **Verified address changes on Monad:** when a contact really changes wallets, they approve the new address **from their old wallet** in a small registry contract. Only the old key can write that record, so KnownHosts can tell a real change from an impersonation.
-
-## How it works
-
-```
- Browser (wallet UI)            Flask server                    Monad Testnet
- ────────────────────          ──────────────────────          ─────────────────────────
- paste address  ── POST /api/check ──▶  compare to contacts      KnownHostsRegistry
-                                        (MongoDB Atlas)          rotatedTo[old] = new
-                                        read registry ◀── web3 ── (written only by old key)
- verdict panel  ◀───────────────────── verdict
-
- "Alice's wallet" page ── MetaMask signs rotate(newAddress) ──▶ registry   (server not involved)
-```
-
-### Verdicts
-
-| Verdict | When | UI |
-|---|---|---|
-| 🟢 `trusted` | Address is exactly a saved contact | "Trusted contact: Alice" |
-| ✅ `rotation_verified` | The contact's old wallet approved this address on-chain | "Verified on Monad" + explorer link + update contact |
-| 🔴 `identity_changed` | You're paying a specific contact, and this address is neither theirs nor approved by them | SSH-style "RECIPIENT IDENTIFICATION HAS CHANGED" |
-| 🔴 `lookalike` | Same first 4 and last 4 hex characters as a contact, different middle | Both full addresses with differences highlighted |
-| 🟡 `new` | Never seen before | "First time paying this address. Trust it?" |
-
-If the chain can't be reached, the API **fails closed** (HTTP 503, "do not send yet") instead of guessing.
-
-### The contract
-
-[`contracts/KnownHostsRegistry.sol`](contracts/KnownHostsRegistry.sol), about 30 lines:
-
-```solidity
-function rotate(address newAddress) external   // rotatedTo[msg.sender] = newAddress
-function revoke() external                      // undo your own rotation
-```
-
-Entries are keyed by `msg.sender`, so **only the owner of the old wallet can approve a new one**. Not the KnownHosts server, and not an attacker.
 
 ## Demo
 
